@@ -1,17 +1,19 @@
 package unimag.plataformamedicos.domine.entities;
 
-
 import jakarta.persistence.*;
 import lombok.*;
+import unimag.plataformamedicos.enums.OfficeStatus;
 
 import java.time.Instant;
 import java.util.UUID;
+
+
 @Entity
-@Table(name = "doctors")
+@Table(name = "offices")
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
 @Builder
-public class Doctor {
+public class Office {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -19,18 +21,12 @@ public class Doctor {
     @Column(nullable = false)
     private String name;
 
-    @Column(name = "licence_number", nullable = false, unique = true)
-    private String licenceNumber;
+    private String location;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String email;
-
     @Builder.Default
-    private Boolean active = true;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "specialty_id", nullable = false)
-    private Specialty specialty;
+    private OfficeStatus status = OfficeStatus.AVAILABLE;
 
     @Column(name = "created_at")
     @Builder.Default

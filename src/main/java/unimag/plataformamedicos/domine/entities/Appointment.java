@@ -19,10 +19,10 @@ public class Appointment {
     private UUID id;
 
     @Column(name = "start_at", nullable = false)
-    private LocalDateTime startAt;
+    private Instant startAt;
 
     @Column(name = "end_at", nullable = false)
-    private LocalDateTime endAt;
+    private Instant endAt;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

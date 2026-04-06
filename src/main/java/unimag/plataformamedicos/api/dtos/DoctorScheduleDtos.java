@@ -1,7 +1,6 @@
 package unimag.plataformamedicos.api.dtos;
 
-import org.springframework.cglib.core.Local;
-
+import java.io.Serializable;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.UUID;
@@ -12,18 +11,19 @@ public class DoctorScheduleDtos {
             DayOfWeek dayOfWeek,
             LocalTime startTime,
             LocalTime endTime
-    ) {}
+    ) implements Serializable  {}
 
     public record UpdateDoctorScheduleRequest(
+            UUID id,
             DayOfWeek dayOfWeek,
             LocalTime startTime,
             LocalTime endTime
-    ) {}
+    ) implements Serializable  {}
 
     public record DoctorScheduleResponse(
             UUID id,
             DayOfWeek dayOfWeek,
             LocalTime startTime,
             LocalTime endTime
-    ) {}
+    ) implements Serializable {}
 }

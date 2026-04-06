@@ -1,7 +1,6 @@
 package unimag.plataformamedicos.service.mappers;
 
 import unimag.plataformamedicos.api.dtos.AppointmentDtos;
-import unimag.plataformamedicos.domine.entities.Appointment;
 import unimag.plataformamedicos.domine.entities.*;
 
 public class AppointmentMapper {
@@ -13,11 +12,11 @@ public class AppointmentMapper {
             Office office,
             AppointmentType appointmentType) {
         return Appointment.builder()
+                .startAt(request.startAt())
                 .patient(patient)
                 .doctor(doctor)
                 .office(office)
                 .appointmentType(appointmentType)
-                .startAt(request.startAt())
                 .build();
     }
 

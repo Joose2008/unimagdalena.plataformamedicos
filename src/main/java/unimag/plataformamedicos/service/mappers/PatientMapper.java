@@ -2,7 +2,6 @@ package unimag.plataformamedicos.service.mappers;
 
 import unimag.plataformamedicos.api.dtos.PatientDtos;
 import unimag.plataformamedicos.domine.entities.Patient;
-import unimag.plataformamedicos.enums.PatientStatus;
 
 public class PatientMapper {
 
@@ -43,6 +42,9 @@ public class PatientMapper {
         }
         if (request.phone() != null) {
             patient.setPhone(request.phone());
+        }
+        if(request.patientStatus() != null){
+            patient.setStatus(request.patientStatus());
         }
     }
 }

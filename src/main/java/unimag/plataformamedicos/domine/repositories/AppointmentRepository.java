@@ -15,7 +15,7 @@ import unimag.plataformamedicos.domine.entities.Patient;
 import unimag.plataformamedicos.enums.AppointmentStatus;
 import unimag.plataformamedicos.enums.PatientStatus;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,9 +24,7 @@ public interface    AppointmentRepository extends JpaRepository<Appointment, UUI
 
     List<Appointment> findAppointmentByPatientAndStatus(Patient patient, AppointmentStatus appointmentStatus);
 
-    List<Appointment> findAppointmentByPatientAndPatientStatus(Patient patient, PatientStatus patientStatus);
-
-    List<Appointment> findAppointmentByStartAtBetween(Instant start, Instant end);
+    List<Appointment> findAppointmentByStartAtBetween(LocalDateTime start, LocalDateTime end);
 
     @Query("""
         select count(a) > 0
@@ -38,8 +36,8 @@ public interface    AppointmentRepository extends JpaRepository<Appointment, UUI
 """)
     boolean existsOverLapForDoctor(
             @Param("doctor") Doctor doctor,
-            @Param("startAt") Instant startAt,
-            @Param("endAt") Instant endAt
+            @Param("startAt") LocalDateTime startAt,
+            @Param("endAt") LocalDateTime endAt
     );
 
     @Query("""
@@ -52,9 +50,24 @@ public interface    AppointmentRepository extends JpaRepository<Appointment, UUI
 """)
     boolean existsOverLapForOffice(
             @Param("office") Office office,
-            @Param("startAt") Instant startAt,
-            @Param("endAt") Instant endAt
+            @Param("startAt") LocalDateTime startAt,
+            @Param("endAt") LocalDateTime endAt
     );
+
+    @Query("""
+        select count(a) > 0
+        from Appointment a
+        where a.patient = :patient
+        And a.status NOT IN ('CANCELLED', 'COMPLETED', 'NO_SHOW')
+        And a.startAt < :endAt
+        And a.endAt > :startAt
+""")
+    boolean existsOverLapForPatient(
+            @Param("patient") Patient patient,
+            @Param("startAt") LocalDateTime startAt,
+            @Param("endAt") LocalDateTime endAt
+    );
+
 
     @Query("""
 select a from Appointment a
@@ -65,8 +78,8 @@ order by a.startAt ASC
 """)
     List<Appointment> findByDoctorAndDate(
             @Param("doctor") Doctor doctor,
-            @Param("startOfDay") Instant startOfDay,
-            @Param("endOfDay") Instant endOfDay
+            @Param("startOfDay") LocalDateTime startOfDay,
+            @Param("endOfDay") LocalDateTime endOfDay
     );
 
     @Query("""
@@ -80,8 +93,8 @@ And a.status NOT IN ('CANCELLED')
 group by a.office
 """)
     List<OfficeOccupancy> sumOccupiedMinutesByOffice(
-            @Param("start") Instant start,
-            @Param("end") Instant end
+            @Param("start") LocalDateTime start,
+            @Param("end") LocalDateTime end
     );
 
     @Query("""
@@ -120,7 +133,7 @@ group by a.patient
 order by count(a) DESC
 """)
     List<PatientCountStatus> rankPatientByStatusNoShow(
-            @Param("start") Instant start,
-            @Param("end") Instant end
+            @Param("start") LocalDateTime start,
+            @Param("end") LocalDateTime end
     );
 }

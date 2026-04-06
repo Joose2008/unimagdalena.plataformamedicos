@@ -1,25 +1,28 @@
 package unimag.plataformamedicos.api.dtos;
 
-import unimag.plataformamedicos.domine.entities.AppointmentType;
-import unimag.plataformamedicos.domine.entities.Doctor;
 import unimag.plataformamedicos.enums.AppointmentStatus;
 
-import java.time.Instant;
+import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 public class AppointmentDtos {
 
     public record CreateAppointmentRequest(
-            Instant startAt
-    ) {}
+            UUID patientId,
+            UUID doctorId,
+            UUID officeId,
+            UUID appointmentTypeId,
+            LocalDateTime startAt
+    ) implements Serializable {}
 
     public record CompleteAppointmentRequest(
             String observations
-    ) {}
+    ) implements Serializable {}
 
     public record CancelAppointmentRequest(
             String cancellationReason
-    ) {}
+    ) implements Serializable{}
 
     public record AppointmentResponse(
             UUID id,
@@ -27,10 +30,10 @@ public class AppointmentDtos {
             DoctorDtos.DoctorSummaryResponse doctorId,
             OfficeDtos.OfficeResponse officeId,
             AppointmentTypeDtos.AppointmentTypeSummaryResponse appointmentTypeId,
-            Instant startAt,
-            Instant endAt,
+            LocalDateTime startAt,
+            LocalDateTime endAt,
             AppointmentStatus status,
             String cancellationReason,
             String observations
-    ) {}
+    )implements Serializable {}
 }

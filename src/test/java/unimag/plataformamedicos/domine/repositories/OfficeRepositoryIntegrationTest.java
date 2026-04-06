@@ -33,8 +33,9 @@ class OfficeRepositoryIntegrationTest extends AbstractIntegrationTest {
     private Office inactiveOffice;
 
     @BeforeEach
+    @org.springframework.transaction.annotation.Transactional
     void setUp() {
-        officeRepository.deleteAll();
+        limpiarTablas();
 
         availableOffice = officeRepository.save(Office.builder()
                 .name("Consultorio A")

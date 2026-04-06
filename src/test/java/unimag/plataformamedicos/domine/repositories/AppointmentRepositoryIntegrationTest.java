@@ -51,14 +51,9 @@ class AppointmentRepositoryIntegrationTest extends AbstractIntegrationTest {
     private AppointmentType appointmentType; // duración: 30 minutos
 
     @BeforeEach
+    @org.springframework.transaction.annotation.Transactional
     void setUp() {
-        // Limpiamos en orden para respetar las FK
-        appointmentRepository.deleteAll();
-        doctorRepository.deleteAll();
-        patientRepository.deleteAll();
-        officeRepository.deleteAll();
-        appointmentTypeRepository   .deleteAll();
-        specialtyRepository.deleteAll();
+        limpiarTablas();
 
         Specialty esp = specialtyRepository.save(
                 Specialty.builder().name("Medicina General").build()

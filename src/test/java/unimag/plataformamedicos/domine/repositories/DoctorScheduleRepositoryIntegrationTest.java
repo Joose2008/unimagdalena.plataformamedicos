@@ -39,8 +39,9 @@ class DoctorScheduleRepositoryIntegrationTest extends AbstractIntegrationTest {
     private Doctor otraDoctor;
 
     @BeforeEach
+    @org.springframework.transaction.annotation.Transactional
     void setUp() {
-        scheduleRepository.deleteAll();
+        limpiarTablas();
         doctorRepository.deleteAll();
         specialtyRepository.deleteAll();
 

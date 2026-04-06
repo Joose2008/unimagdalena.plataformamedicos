@@ -38,8 +38,9 @@ class PatientRepositoryIntegrationTest extends AbstractIntegrationTest {
      * que los tests sean independientes entre sí.
      */
     @BeforeEach
+    @org.springframework.transaction.annotation.Transactional
     void setUp() {
-        patientRepository.deleteAll();
+        limpiarTablas();
 
         activePatient = patientRepository.save(
                 Patient.builder()

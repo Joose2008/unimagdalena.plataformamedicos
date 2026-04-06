@@ -31,8 +31,9 @@ class DoctorRepositoryIntegrationTest extends AbstractIntegrationTest {
     private Specialty psicologia;
 
     @BeforeEach
+    @org.springframework.transaction.annotation.Transactional
     void setUp() {
-        doctorRepository.deleteAll();
+        limpiarTablas();
         specialtyRepository.deleteAll();
 
         // Creamos dos especialidades distintas para probar el filtro

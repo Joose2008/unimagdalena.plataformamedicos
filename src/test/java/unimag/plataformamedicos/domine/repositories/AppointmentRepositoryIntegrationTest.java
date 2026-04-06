@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import unimag.plataformamedicos.api.dtos.query.DoctorAppointment;
 import unimag.plataformamedicos.api.dtos.query.OfficeOccupancy;
 import unimag.plataformamedicos.api.dtos.query.PatientCountStatus;
@@ -14,6 +15,8 @@ import unimag.plataformamedicos.enums.OfficeStatus;
 import unimag.plataformamedicos.enums.PatientStatus;
 
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
@@ -41,7 +44,7 @@ class AppointmentRepositoryIntegrationTest extends AbstractIntegrationTest {
     @Autowired private SpecialtyRepository specialtyRepository;
 
     // Punto de referencia temporal para todos los tests
-    private final Instant BASE_TIME = Instant.now().truncatedTo(ChronoUnit.HOURS);
+    private final LocalDateTime BASE_TIME = LocalDateTime.now().truncatedTo(ChronoUnit.HOURS);
 
     // Entidades compartidas entre tests
     private Patient patient1;
@@ -95,7 +98,7 @@ class AppointmentRepositoryIntegrationTest extends AbstractIntegrationTest {
 
     // Método helper para crear y guardar citas fácilmente
     private Appointment saveAppointment(Patient p, Doctor d, Office o,
-                                        Instant start, Instant end,
+                                        LocalDateTime start, LocalDateTime end,
                                         AppointmentStatus status) {
         return appointmentRepository.save(Appointment.builder()
                 .patient(p)
@@ -147,8 +150,8 @@ class AppointmentRepositoryIntegrationTest extends AbstractIntegrationTest {
     @Test
     @DisplayName("findByStartAtBetween → devuelve citas dentro del rango")
     void findByStartAtBetween_shouldReturnOnlyAppointmentsInRange() {
-        Instant rangeStart = BASE_TIME;
-        Instant rangeEnd   = BASE_TIME.plus(4, ChronoUnit.HOURS);
+        LocalDateTime rangeStart = BASE_TIME;
+        LocalDateTime rangeEnd   = BASE_TIME.plus(4, ChronoUnit.HOURS);
 
         // Cita DENTRO del rango
         saveAppointment(patient1, doctor, office,
@@ -281,8 +284,8 @@ class AppointmentRepositoryIntegrationTest extends AbstractIntegrationTest {
                 BASE_TIME.plus(90, ChronoUnit.MINUTES),
                 AppointmentStatus.CONFIRMED);
 
-        Instant rangeStart = BASE_TIME.minus(1, ChronoUnit.HOURS);
-        Instant rangeEnd   = BASE_TIME.plus(3, ChronoUnit.HOURS);
+        LocalDateTime rangeStart = BASE_TIME.minus(1, ChronoUnit.HOURS);
+        LocalDateTime rangeEnd   = BASE_TIME.plus(3, ChronoUnit.HOURS);
 
         List<OfficeOccupancy> result = appointmentRepository
                 .sumOccupiedMinutesByOffice(rangeStart, rangeEnd);
@@ -364,8 +367,8 @@ class AppointmentRepositoryIntegrationTest extends AbstractIntegrationTest {
     @Test
     @DisplayName("rankPatientByStatusNoShow → identifica paciente con más NO_SHOW")
     void rankPatientByStatusNoShow_shouldRankPatientWithMostNoShows() {
-        Instant periodStart = BASE_TIME.minus(30, ChronoUnit.DAYS);
-        Instant periodEnd   = BASE_TIME.plus(1, ChronoUnit.DAYS);
+        LocalDateTime periodStart = BASE_TIME.minus(30, ChronoUnit.DAYS);
+        LocalDateTime periodEnd   = BASE_TIME.plus(1, ChronoUnit.DAYS);
 
         // patient1: 2 NO_SHOW
         saveAppointment(patient1, doctor, office,

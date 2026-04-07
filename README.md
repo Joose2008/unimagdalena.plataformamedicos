@@ -239,83 +239,6 @@ public record PatientCountStatus(Patient patient, Long countNoShow) {}
 public record SpecialtyStats(Specialty specialty, Long cancelled, Long noShow) {}
 ```
 
----
-
-## Endpoints
-
-### Pacientes
-
-| Método | Endpoint | Descripción |
-|---|---|---|
-| `POST` | `/api/patients` | Crear paciente |
-| `GET` | `/api/patients/{id}` | Obtener paciente por ID |
-| `GET` | `/api/patients` | Listar pacientes |
-| `PUT` | `/api/patients/{id}` | Actualizar paciente |
-| `PATCH` | `/api/patients/{id}/document` | Actualizar número de documento |
-
-### Doctores
-
-| Método | Endpoint | Descripción |
-|---|---|---|
-| `POST` | `/api/doctors` | Crear doctor |
-| `GET` | `/api/doctors/{id}` | Obtener doctor por ID |
-| `GET` | `/api/doctors` | Listar doctores |
-| `PUT` | `/api/doctors/{id}` | Actualizar doctor |
-| `PATCH` | `/api/doctors/{id}/licence` | Actualizar número de licencia |
-
-### Especialidades
-
-| Método | Endpoint | Descripción |
-|---|---|---|
-| `POST` | `/api/specialties` | Crear especialidad |
-| `GET` | `/api/specialties` | Listar especialidades |
-
-### Consultorios
-
-| Método | Endpoint | Descripción |
-|---|---|---|
-| `POST` | `/api/offices` | Crear consultorio |
-| `GET` | `/api/offices` | Listar consultorios |
-| `PUT` | `/api/offices/{id}` | Actualizar consultorio |
-
-### Tipos de cita
-
-| Método | Endpoint | Descripción |
-|---|---|---|
-| `POST` | `/api/appointment-types` | Crear tipo de cita |
-| `GET` | `/api/appointment-types` | Listar tipos de cita |
-
-### Horarios de doctor
-
-| Método | Endpoint | Descripción |
-|---|---|---|
-| `POST` | `/api/doctors/{doctorId}/schedules` | Crear horario |
-| `GET` | `/api/doctors/{doctorId}/schedules` | Listar horarios del doctor |
-| `PUT` | `/api/doctors/{doctorId}/schedules/{scheduleId}` | Actualizar horario |
-
-### Citas
-
-| Método | Endpoint | Descripción |
-|---|---|---|
-| `POST` | `/api/appointments` | Crear cita |
-| `GET` | `/api/appointments/{id}` | Obtener cita por ID |
-| `GET` | `/api/appointments` | Listar citas |
-| `PUT` | `/api/appointments/{id}/confirm` | Confirmar cita |
-| `PUT` | `/api/appointments/{id}/cancel` | Cancelar cita |
-| `PUT` | `/api/appointments/{id}/complete` | Completar cita |
-| `PUT` | `/api/appointments/{id}/no-show` | Marcar como no asistida |
-
-### Disponibilidad y reportes
-
-| Método | Endpoint | Descripción |
-|---|---|---|
-| `GET` | `/api/availability/doctors/{doctorId}` | Slots disponibles de un doctor |
-| `GET` | `/api/reports/office-occupancy` | Ocupación de consultorios |
-| `GET` | `/api/reports/doctor-productivity` | Productividad de doctores |
-| `GET` | `/api/reports/no-show-patients` | Pacientes con más inasistencias |
-
----
-
 ## Ejecución
 
 ### Requisitos
@@ -325,7 +248,6 @@ public record SpecialtyStats(Specialty specialty, Long cancelled, Long noShow) {
 - Maven 3.9+
 
 ### Configuración
-
 ```yaml
 # application.yml
 spring:
@@ -369,7 +291,7 @@ docker compose down
 
 ```bash
 # Clonar el repositorio
-git clone <url>
+git clone <https://github.com/Joose2008/unimagdalena.plataformamedicos>
 cd plataformamedicos
 
 # Compilar (saltando tests para no requerir Docker en CI)

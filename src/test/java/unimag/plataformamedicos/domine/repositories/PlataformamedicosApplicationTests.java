@@ -1,4 +1,4 @@
-package unimag.plataformamedicos;
+package unimag.plataformamedicos.domine.repositories;
 
 import org.junit.jupiter.api.Test;
 

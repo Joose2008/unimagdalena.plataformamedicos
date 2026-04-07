@@ -38,10 +38,10 @@ public class AvailabilityServiceImpl implements AvailabilityService {
     @Transactional
     public List<ReportDtos.AvailabilitySlotResponse> getAvailableSlots(UUID doctorId, LocalDate date, UUID appointmentTypeId) {
         Doctor doctor = doctorRepository.findById(doctorId)
-                .orElseThrow(() -> new ResourceNoFoundException("Doctor %d not found".formatted(doctorId)));
+                .orElseThrow(() -> new ResourceNoFoundException("Doctor %s not found".formatted(doctorId)));
 
         AppointmentType appointmentType = appointmentTypeRepository.findById(appointmentTypeId)
-                .orElseThrow(() -> new ResourceNoFoundException("AppointmentType %d not found".formatted(appointmentTypeId)));
+                .orElseThrow(() -> new ResourceNoFoundException("AppointmentType %s not found".formatted(appointmentTypeId)));
 
         DayOfWeek dayOfWeek = date.getDayOfWeek();
         List<DoctorSchedule> schedules = doctorScheduleRepository.findDoctorScheduleByDoctorAndDayOfWeek(doctor,dayOfWeek);
@@ -88,6 +88,5 @@ public class AvailabilityServiceImpl implements AvailabilityService {
         }
 
         return slots;
-    }}
-
-
+    }
+}

@@ -30,6 +30,7 @@ public class Patient {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    @Builder.Default
     private PatientStatus status = PatientStatus.ACTIVE;
 
     @Column(name = "created_at")

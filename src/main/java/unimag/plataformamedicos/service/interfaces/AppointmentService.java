@@ -14,6 +14,6 @@ public interface AppointmentService {
     List<AppointmentResponse> findAll();
     AppointmentResponse confirm(UUID id);
     AppointmentResponse cancel(UUID id, CancelAppointmentRequest request);
-    AppointmentResponse complete(UUID id, AppointmentDtos.CompleteAppointmentRequest request);
+    AppointmentResponse complete(UUID id, String request);
     AppointmentResponse markAsNoShow(UUID id);
 }

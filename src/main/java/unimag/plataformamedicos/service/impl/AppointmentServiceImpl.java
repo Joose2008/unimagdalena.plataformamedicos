@@ -9,7 +9,7 @@ import unimag.plataformamedicos.domine.repositories.*;
 import unimag.plataformamedicos.enums.AppointmentStatus;
 import unimag.plataformamedicos.enums.OfficeStatus;
 import unimag.plataformamedicos.enums.PatientStatus;
-import unimag.plataformamedicos.exception.ResourceNoFoundException;
+import unimag.plataformamedicos.exception.ResourceNotFoundException;
 import unimag.plataformamedicos.service.interfaces.AppointmentService;
 import unimag.plataformamedicos.service.mappers.AppointmentMapper;
 
@@ -41,7 +41,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         // Validar paciente
         Patient patient = patientRepository.findById(request.patientId())
-                .orElseThrow(() -> new ResourceNoFoundException(
+                .orElseThrow(() -> new ResourceNotFoundException(
                         "Patient %s not found".formatted(request.patientId())));
         if (patient.getStatus() != PatientStatus.ACTIVE) {
             throw new RuntimeException("Inactive patient");
@@ -49,7 +49,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         // Validar doctor
         Doctor doctor = doctorRepository.findById(request.doctorId())
-                .orElseThrow(() -> new ResourceNoFoundException(
+                .orElseThrow(() -> new ResourceNotFoundException(
                         "Doctor %s not found".formatted(request.doctorId())));
         if (!doctor.getActive()) {
             throw new RuntimeException("Inactive doctor");
@@ -57,7 +57,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         // Validar consultorio
         Office office = officeRepository.findById(request.officeId())
-                .orElseThrow(() -> new ResourceNoFoundException(
+                .orElseThrow(() -> new ResourceNotFoundException(
                         "Office %s not found".formatted(request.officeId())));
         if (office.getStatus() != OfficeStatus.AVAILABLE) {
             throw new RuntimeException("Inactive office");
@@ -65,7 +65,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         // Validación apppointmentType
         AppointmentType appointmentType = appointmentTypeRepository.findById(request.appointmentTypeId())
-                .orElseThrow(() -> new ResourceNoFoundException(
+                .orElseThrow(() -> new ResourceNotFoundException(
                         "AppointmentType %s not found".formatted(request.appointmentTypeId())));
 
         // Calcular endAt
@@ -126,7 +126,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Transactional(readOnly = true)
     public AppointmentDtos.AppointmentResponse findById(UUID id) {
         return appointmentRepository.findById(id).map(AppointmentMapper::toResponse)
-                .orElseThrow(() -> new ResourceNoFoundException("Appointment %s not found".formatted(id)));
+                .orElseThrow(() -> new ResourceNotFoundException("Appointment %s not found".formatted(id)));
     }
 
     @Override
@@ -139,7 +139,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Transactional
     public AppointmentDtos.AppointmentResponse confirm(UUID id) {
         Appointment appointment = appointmentRepository.findById(id)
-                .orElseThrow(() -> new ResourceNoFoundException("Appointment %s not found".formatted(id)));
+                .orElseThrow(() -> new ResourceNotFoundException("Appointment %s not found".formatted(id)));
 
         if(appointment.getStatus()!=AppointmentStatus.SCHEDULED){
             throw  new RuntimeException("An appointment can only be confirmed if it is in SCHEDULED status");
@@ -154,7 +154,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Transactional
     public AppointmentDtos.AppointmentResponse cancel(UUID id, AppointmentDtos.CancelAppointmentRequest request) {
         Appointment appointment = appointmentRepository.findById(id)
-                .orElseThrow(() -> new ResourceNoFoundException("Appointment %s not found".formatted(id)));
+                .orElseThrow(() -> new ResourceNotFoundException("Appointment %s not found".formatted(id)));
 
         AppointmentStatus currentStatus = appointment.getStatus();
 
@@ -175,9 +175,9 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     @Transactional
-    public AppointmentDtos.AppointmentResponse complete(UUID id, AppointmentDtos.CompleteAppointmentRequest request) {
+    public AppointmentDtos.AppointmentResponse complete(UUID id, String requestObservation) {
         Appointment appointment = appointmentRepository.findById(id)
-                .orElseThrow(() -> new ResourceNoFoundException("Appointment %s not found".formatted(id)));
+                .orElseThrow(() -> new ResourceNotFoundException("Appointment %s not found".formatted(id)));
 
         if(appointment.getStatus() != AppointmentStatus.CONFIRMED){
             throw new RuntimeException("Only one CONFIRMED appointment can be completed");
@@ -186,7 +186,7 @@ public class AppointmentServiceImpl implements AppointmentService {
             throw new RuntimeException("An appointment cannot be completed before its start time");
         }
         appointment.setStatus(AppointmentStatus.COMPLETED);
-        appointment.setObservations(request.observations());
+        appointment.setObservations(requestObservation);
         appointment.setUpdatedAt(Instant.now());
         return AppointmentMapper.toResponse(appointmentRepository.save(appointment));
     }
@@ -195,7 +195,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Transactional
     public AppointmentDtos.AppointmentResponse markAsNoShow(UUID id) {
         Appointment appointment = appointmentRepository.findById(id)
-                .orElseThrow(() -> new ResourceNoFoundException("Appointment %s not found".formatted(id)));
+                .orElseThrow(() -> new ResourceNotFoundException("Appointment %s not found".formatted(id)));
 
         if(appointment.getStatus() != AppointmentStatus.CONFIRMED){
             throw new RuntimeException("Only one CONFIRMED appointment can be marked NO_SHOW");

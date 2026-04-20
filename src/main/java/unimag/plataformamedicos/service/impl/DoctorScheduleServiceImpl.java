@@ -7,7 +7,7 @@ import unimag.plataformamedicos.api.dtos.DoctorScheduleDtos;
 import unimag.plataformamedicos.domine.entities.Doctor;
 import unimag.plataformamedicos.domine.repositories.DoctorRepository;
 import unimag.plataformamedicos.domine.repositories.DoctorScheduleRepository;
-import unimag.plataformamedicos.exception.ResourceNoFoundException;
+import unimag.plataformamedicos.exception.ResourceNotFoundException;
 import unimag.plataformamedicos.service.interfaces.DoctorScheduleService;
 import unimag.plataformamedicos.service.mappers.DoctorScheduleMapper;
 
@@ -28,7 +28,7 @@ public class DoctorScheduleServiceImpl implements DoctorScheduleService {
     public DoctorScheduleDtos.DoctorScheduleResponse create(UUID doctorId, DoctorScheduleDtos.CreateDoctorScheduleRequest request) {
 
         var doctor = doctorRepository.findById(doctorId)
-                .orElseThrow(() -> new ResourceNoFoundException("Doctor with id %s not found".formatted(doctorId)));
+                .orElseThrow(() -> new ResourceNotFoundException("Doctor with id %s not found".formatted(doctorId)));
         var doctorSchedule = DoctorScheduleMapper.toEntity(request, doctor);
         var  doctorScheduleSaved =  doctorScheduleRepository.save(doctorSchedule);
         return DoctorScheduleMapper.toResponse(doctorScheduleSaved);
@@ -38,7 +38,7 @@ public class DoctorScheduleServiceImpl implements DoctorScheduleService {
     @Transactional(readOnly = true)
     public List<DoctorScheduleDtos.DoctorScheduleResponse> findByDoctor(UUID doctorId) {
         Doctor doctor = doctorRepository.findById(doctorId)
-                .orElseThrow(() -> new ResourceNoFoundException("Doctor with id %s not found".formatted(doctorId)));
+                .orElseThrow(() -> new ResourceNotFoundException("Doctor with id %s not found".formatted(doctorId)));
 
         return doctorScheduleRepository.findByDoctor(doctor).stream().map(DoctorScheduleMapper::toResponse).toList();
     }
@@ -47,7 +47,7 @@ public class DoctorScheduleServiceImpl implements DoctorScheduleService {
     @Transactional
     public List<DoctorScheduleDtos.DoctorScheduleResponse> findDoctorScheduleByDoctorAndDayOfWeek(UUID doctorId, DayOfWeek dayOfWeek){
         Doctor doctor = doctorRepository.findById(doctorId)
-                .orElseThrow(() -> new ResourceNoFoundException("Doctor %s not found".formatted(doctorId)));
+                .orElseThrow(() -> new ResourceNotFoundException("Doctor %s not found".formatted(doctorId)));
 
         return doctorScheduleRepository.findDoctorScheduleByDoctorAndDayOfWeek(doctor,dayOfWeek).stream().map(DoctorScheduleMapper::toResponse).toList();
     }

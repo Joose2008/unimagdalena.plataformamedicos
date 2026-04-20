@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import unimag.plataformamedicos.api.dtos.SpecialtyDtos;
 import unimag.plataformamedicos.domine.entities.Specialty;
 import unimag.plataformamedicos.domine.repositories.SpecialtyRepository;
-import unimag.plataformamedicos.exception.ResourceNoFoundException;
+import unimag.plataformamedicos.exception.ResourceNotFoundException;
 import unimag.plataformamedicos.service.interfaces.SpecialtyService;
 import unimag.plataformamedicos.service.mappers.SpecialtyMapper;
 
@@ -32,7 +32,7 @@ public class SpecialtyServiceImpl implements SpecialtyService {
     @Transactional(readOnly = true)
     public SpecialtyDtos.SpecialtyResponse findById(UUID id) {
         return specialtyRepository.findById(id).map(SpecialtyMapper::toResponse)
-                .orElseThrow(() -> new ResourceNoFoundException("Member %d not found".formatted(id)));
+                .orElseThrow(() -> new ResourceNotFoundException("Member %d not found".formatted(id)));
     }
 
     @Override

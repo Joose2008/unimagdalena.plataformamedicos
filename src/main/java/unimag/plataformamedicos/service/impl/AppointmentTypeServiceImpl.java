@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import unimag.plataformamedicos.api.dtos.AppointmentTypeDtos;
 import unimag.plataformamedicos.domine.entities.AppointmentType;
 import unimag.plataformamedicos.domine.repositories.AppointmentTypeRepository;
-import unimag.plataformamedicos.exception.ResourceNoFoundException;
+import unimag.plataformamedicos.exception.ResourceNotFoundException;
 import unimag.plataformamedicos.service.interfaces.AppointmentTypeService;
 import unimag.plataformamedicos.service.mappers.AppointmentTypeMapper;
 
@@ -32,7 +32,7 @@ public class AppointmentTypeServiceImpl implements AppointmentTypeService {
     @Transactional(readOnly = true)
     public AppointmentTypeDtos.AppointmentTypeResponse findById(UUID id) {
         return appointmentTypeRepository.findById(id).map(AppointmentTypeMapper::toResponse)
-                .orElseThrow(() -> new ResourceNoFoundException("AppointmentType %d not found".formatted(id)));
+                .orElseThrow(() -> new ResourceNotFoundException("AppointmentType %d not found".formatted(id)));
     }
 
     @Override

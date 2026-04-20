@@ -13,7 +13,7 @@ import unimag.plataformamedicos.domine.repositories.AppointmentTypeRepository;
 import unimag.plataformamedicos.domine.repositories.DoctorRepository;
 import unimag.plataformamedicos.domine.repositories.DoctorScheduleRepository;
 import unimag.plataformamedicos.enums.AppointmentStatus;
-import unimag.plataformamedicos.exception.ResourceNoFoundException;
+import unimag.plataformamedicos.exception.ResourceNotFoundException;
 import unimag.plataformamedicos.service.interfaces.AvailabilityService;
 
 import java.time.DayOfWeek;
@@ -38,10 +38,10 @@ public class AvailabilityServiceImpl implements AvailabilityService {
     @Transactional
     public List<ReportDtos.AvailabilitySlotResponse> getAvailableSlots(UUID doctorId, LocalDate date, UUID appointmentTypeId) {
         Doctor doctor = doctorRepository.findById(doctorId)
-                .orElseThrow(() -> new ResourceNoFoundException("Doctor %s not found".formatted(doctorId)));
+                .orElseThrow(() -> new ResourceNotFoundException("Doctor %s not found".formatted(doctorId)));
 
         AppointmentType appointmentType = appointmentTypeRepository.findById(appointmentTypeId)
-                .orElseThrow(() -> new ResourceNoFoundException("AppointmentType %s not found".formatted(appointmentTypeId)));
+                .orElseThrow(() -> new ResourceNotFoundException("AppointmentType %s not found".formatted(appointmentTypeId)));
 
         DayOfWeek dayOfWeek = date.getDayOfWeek();
         List<DoctorSchedule> schedules = doctorScheduleRepository.findDoctorScheduleByDoctorAndDayOfWeek(doctor,dayOfWeek);

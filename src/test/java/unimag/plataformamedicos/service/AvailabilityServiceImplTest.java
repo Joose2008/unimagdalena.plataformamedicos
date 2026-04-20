@@ -15,11 +15,10 @@ import unimag.plataformamedicos.domine.repositories.DoctorScheduleRepository;
 import unimag.plataformamedicos.enums.AppointmentStatus;
 import unimag.plataformamedicos.enums.OfficeStatus;
 import unimag.plataformamedicos.enums.PatientStatus;
-import unimag.plataformamedicos.exception.ResourceNoFoundException;
+import unimag.plataformamedicos.exception.ResourceNotFoundException;
 import unimag.plataformamedicos.service.impl.AvailabilityServiceImpl;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
@@ -167,7 +166,7 @@ class AvailabilityServiceImplTest {
     void shouldThrowWhenDoctorNotFound() {
         when(doctorRepository.findById(doctorId)).thenReturn(Optional.empty());
 
-        assertThrows(ResourceNoFoundException.class,
+        assertThrows(ResourceNotFoundException.class,
                 () -> service.getAvailableSlots(doctorId, DATE, appointmentTypeId));
     }
 
@@ -176,7 +175,7 @@ class AvailabilityServiceImplTest {
         when(doctorRepository.findById(doctorId)).thenReturn(Optional.of(doctor));
         when(appointmentTypeRepository.findById(appointmentTypeId)).thenReturn(Optional.empty());
 
-        assertThrows(ResourceNoFoundException.class,
+        assertThrows(ResourceNotFoundException.class,
                 () -> service.getAvailableSlots(doctorId, DATE, appointmentTypeId));
     }
 }

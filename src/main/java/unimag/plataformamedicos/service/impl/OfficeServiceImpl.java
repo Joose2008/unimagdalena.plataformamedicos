@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import unimag.plataformamedicos.api.dtos.OfficeDtos;
 import unimag.plataformamedicos.domine.entities.Office;
 import unimag.plataformamedicos.domine.repositories.OfficeRepository;
-import unimag.plataformamedicos.exception.ResourceNoFoundException;
+import unimag.plataformamedicos.exception.ResourceNotFoundException;
 import unimag.plataformamedicos.service.interfaces.OfficeService;
 import unimag.plataformamedicos.service.mappers.OfficeMapper;
 
@@ -31,7 +31,7 @@ public class OfficeServiceImpl implements OfficeService {
     @Override
     public OfficeDtos.OfficeResponse findById(UUID id) {
         return officeRepository.findById(id).map(OfficeMapper::toResponse)
-                .orElseThrow(() -> new ResourceNoFoundException("Office %d not found".formatted(id)));
+                .orElseThrow(() -> new ResourceNotFoundException("Office %d not found".formatted(id)));
     }
 
     @Override
@@ -42,7 +42,7 @@ public class OfficeServiceImpl implements OfficeService {
     @Override
     public OfficeDtos.OfficeResponse update(UUID id, OfficeDtos.UpdateOfficeRequest request) {
         Office office = officeRepository.findById(id)
-                .orElseThrow(() -> new ResourceNoFoundException("Office %d not found".formatted(id)));
+                .orElseThrow(() -> new ResourceNotFoundException("Office %d not found".formatted(id)));
         OfficeMapper.patch(office,request);
         officeRepository.save(office);
         return OfficeMapper.toResponse(office);

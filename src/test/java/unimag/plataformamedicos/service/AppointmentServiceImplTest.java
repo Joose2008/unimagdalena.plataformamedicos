@@ -12,7 +12,7 @@ import unimag.plataformamedicos.domine.repositories.*;
 import unimag.plataformamedicos.enums.AppointmentStatus;
 import unimag.plataformamedicos.enums.OfficeStatus;
 import unimag.plataformamedicos.enums.PatientStatus;
-import unimag.plataformamedicos.exception.ResourceNoFoundException;
+import unimag.plataformamedicos.exception.ResourceNotFoundException;
 import unimag.plataformamedicos.service.impl.AppointmentServiceImpl;
 
 import java.time.LocalDateTime;
@@ -330,11 +330,12 @@ class AppointmentServiceImplTest {
         appointment.setStatus(AppointmentStatus.CONFIRMED);
         appointment.setStartAt(LocalDateTime.now().minusMinutes(10));
         var request = new AppointmentDtos.CompleteAppointmentRequest("Todo bien");
+        String observation = request.observations();
 
         when(appointmentRepository.findById(appointmentId)).thenReturn(Optional.of(appointment));
         when(appointmentRepository.save(any())).thenReturn(appointment);
 
-        var response = service.complete(appointmentId, request);
+        var response = service.complete(appointmentId, observation);
 
         assertNotNull(response);
         verify(appointmentRepository).save(any());
@@ -344,10 +345,11 @@ class AppointmentServiceImplTest {
     void shouldThrowWhenCompletingNonConfirmedAppointment() {
         appointment.setStatus(AppointmentStatus.SCHEDULED);
         var request = new AppointmentDtos.CompleteAppointmentRequest("obs");
+        String observation = request.observations();
 
         when(appointmentRepository.findById(appointmentId)).thenReturn(Optional.of(appointment));
 
-        assertThrows(RuntimeException.class, () -> service.complete(appointmentId, request));
+        assertThrows(RuntimeException.class, () -> service.complete(appointmentId, observation));
         verify(appointmentRepository, never()).save(any());
     }
 
@@ -356,10 +358,11 @@ class AppointmentServiceImplTest {
         appointment.setStatus(AppointmentStatus.CONFIRMED);
         appointment.setStartAt(LocalDateTime.now().plusHours(1));
         var request = new AppointmentDtos.CompleteAppointmentRequest("obs");
+        String observation = request.observations();
 
         when(appointmentRepository.findById(appointmentId)).thenReturn(Optional.of(appointment));
 
-        assertThrows(RuntimeException.class, () -> service.complete(appointmentId, request));
+        assertThrows(RuntimeException.class, () -> service.complete(appointmentId, observation));
         verify(appointmentRepository, never()).save(any());
     }
 
@@ -420,6 +423,6 @@ class AppointmentServiceImplTest {
     void shouldThrowWhenAppointmentNotFound() {
         when(appointmentRepository.findById(appointmentId)).thenReturn(Optional.empty());
 
-        assertThrows(ResourceNoFoundException.class, () -> service.findById(appointmentId));
+        assertThrows(ResourceNotFoundException.class, () -> service.findById(appointmentId));
     }
 }

@@ -3,9 +3,9 @@ package unimag.plataformamedicos.api.controllers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import unimag.plataformamedicos.api.dtos.OfficeDtos.*;
 import unimag.plataformamedicos.enums.OfficeStatus;
@@ -20,14 +20,13 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest(classes = OfficeController.class)
-@AutoConfigureMockMvc
+@WebMvcTest(OfficeController.class)
 class OfficeControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
-    @MockitoBean
+    @MockBean
     private OfficeService officeService;
 
     private final UUID officeId = UUID.fromString("44444444-4444-4444-4444-444444444444");
@@ -80,7 +79,8 @@ class OfficeControllerTest {
     @Test
     @DisplayName("PUT /api/offices/{id} - debe actualizar consultorio y retornar 200")
     void update_shouldReturn200() throws Exception {
-        OfficeResponse updated = new OfficeResponse(officeId, "Consultorio Renovado", "Piso 3", OfficeStatus.AVAILABLE);
+        // Usamos INACTIVE en lugar de UNDER_MAINTENANCE
+        OfficeResponse updated = new OfficeResponse(officeId, "Consultorio Renovado", "Piso 3", OfficeStatus.INACTIVE);
 
         when(officeService.update(eq(officeId), any(UpdateOfficeRequest.class))).thenReturn(updated);
 
@@ -90,11 +90,12 @@ class OfficeControllerTest {
                                 {
                                   "name": "Consultorio Renovado",
                                   "location": "Piso 3",
-                                  "status": "UNDER_MAINTENANCE"
+                                  "status": "INACTIVE"
                                 }
                                 """))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("Consultorio Renovado"))
-                .andExpect(jsonPath("$.status").value("UNDER_MAINTENANCE"));
+                .andExpect(jsonPath("$.location").value("Piso 3"))
+                .andExpect(jsonPath("$.status").value("INACTIVE"));
     }
 }

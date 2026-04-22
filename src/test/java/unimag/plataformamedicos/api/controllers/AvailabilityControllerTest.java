@@ -3,8 +3,8 @@ package unimag.plataformamedicos.api.controllers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import unimag.plataformamedicos.api.dtos.ReportDtos.AvailabilitySlotResponse;
 import unimag.plataformamedicos.service.interfaces.AvailabilityService;
@@ -20,14 +20,13 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest(classes = AvailabilityController.class)
-@AutoConfigureMockMvc
+@WebMvcTest(AvailabilityController.class)
 class AvailabilityControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
-    @MockitoBean
+    @MockBean
     private AvailabilityService availabilityService;
 
     private final UUID doctorId          = UUID.randomUUID();
@@ -80,7 +79,7 @@ class AvailabilityControllerTest {
     void getAvailableSlots_missingDate_shouldReturn400() throws Exception {
         mockMvc.perform(get("/api/availability/doctors/{doctorId}", doctorId)
                         .param("appointmentTypeId", appointmentTypeId.toString()))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest());  // 400
     }
 
     @Test
@@ -88,6 +87,6 @@ class AvailabilityControllerTest {
     void getAvailableSlots_missingAppointmentTypeId_shouldReturn400() throws Exception {
         mockMvc.perform(get("/api/availability/doctors/{doctorId}", doctorId)
                         .param("date", "2025-05-10"))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest());  // 400
     }
 }

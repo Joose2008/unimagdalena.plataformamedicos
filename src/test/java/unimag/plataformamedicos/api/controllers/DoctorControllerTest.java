@@ -3,9 +3,9 @@ package unimag.plataformamedicos.api.controllers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import unimag.plataformamedicos.api.dtos.DoctorDtos.*;
 import unimag.plataformamedicos.api.dtos.SpecialtyDtos.SpecialtyResponse;
@@ -20,14 +20,13 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest(classes = DoctorController.class)
-@AutoConfigureMockMvc
+@WebMvcTest(DoctorController.class)   // ← Cambio principal
 class DoctorControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
-    @MockitoBean
+    @MockBean   // ← Cambio: @MockBean en lugar de @MockitoBean
     private DoctorService doctorService;
 
     private final UUID doctorId    = UUID.fromString("11111111-1111-1111-1111-111111111111");

@@ -23,4 +23,7 @@ public class AppointmentType {
 
     @Column(name = "duration_minutes", nullable = false)
     private Integer durationMinutes;
+
+    @Builder.Default
+    private Boolean active = true;
 }

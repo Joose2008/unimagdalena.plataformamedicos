@@ -29,4 +29,16 @@ public class AppointmentTypeMapper {
                 .durationMinutes(request.durationMinutes())
                 .build();
     }
+
+    public static void patch(AppointmentType appointmentType, AppointmentTypeDtos.UpdateAppointmentTypeRequest request) {
+        if (request.name() != null) {
+            appointmentType.setName(request.name());
+        }
+        if (request.description() != null) {
+            appointmentType.setDescription(request.description());
+        }
+        if (request.durationMinutes() != null) {
+            appointmentType.setDurationMinutes(request.durationMinutes());
+        }
+    }
 }

@@ -22,4 +22,7 @@ public class Specialty {
     private String name;
 
     private String description;
+
+    @Builder.Default
+    private Boolean active = true;
 }

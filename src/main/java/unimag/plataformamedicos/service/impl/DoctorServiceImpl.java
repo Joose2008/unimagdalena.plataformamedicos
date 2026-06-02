@@ -50,6 +50,18 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<DoctorDtos.DoctorResponse> search(String query) {
+        if (query == null || query.trim().isBlank()) {
+            return List.of();
+        }
+        return doctorRepository.searchActiveByNameLicenceOrEmail(query.trim()).stream()
+                .limit(10)
+                .map(DoctorMapper::toResponse)
+                .toList();
+    }
+
+    @Override
     @Transactional
     public DoctorDtos.DoctorResponse update(UUID id, DoctorDtos.UpdateDoctorRequest request) {
         Doctor doctor = doctorRepository.findById(id)

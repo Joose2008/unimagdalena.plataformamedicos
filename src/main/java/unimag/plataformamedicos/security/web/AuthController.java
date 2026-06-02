@@ -43,7 +43,7 @@ public class AuthController {
 
         var roles = Optional.ofNullable(req.roles())
                 .filter(r -> !r.isEmpty())
-                .orElseGet(() -> Set.of(Role.ROLE_USER));
+                .orElse(Set.of());
 
         var user = AppUser.builder()
                 .email(req.email())

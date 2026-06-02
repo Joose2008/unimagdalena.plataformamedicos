@@ -43,7 +43,7 @@ public class UserAdminController {
 
         Set<Role> roles = Optional.ofNullable(request.roles())
                 .filter(selectedRoles -> !selectedRoles.isEmpty())
-                .orElseGet(() -> Set.of(Role.ROLE_USER));
+                .orElse(Set.of());
 
         AppUser user = AppUser.builder()
                 .email(request.email().trim())

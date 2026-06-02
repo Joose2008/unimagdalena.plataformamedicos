@@ -90,7 +90,7 @@ class AppointmentControllerTest {
     @Test
     @DisplayName("GET /api/appointments - debe retornar lista con 200")
     void findAll_shouldReturn200() throws Exception {
-        when(appointmentService.findAll()).thenReturn(List.of(buildResponse(AppointmentStatus.SCHEDULED)));
+        when(appointmentService.findAll(any())).thenReturn(List.of(buildResponse(AppointmentStatus.SCHEDULED)));
 
         mockMvc.perform(get("/api/appointments"))
                 .andExpect(status().isOk())

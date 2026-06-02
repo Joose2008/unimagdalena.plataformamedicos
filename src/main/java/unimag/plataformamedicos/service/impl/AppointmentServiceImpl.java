@@ -17,6 +17,7 @@ import java.time.DayOfWeek;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -131,8 +132,19 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<AppointmentDtos.AppointmentResponse> findAll() {
-        return appointmentRepository.findAll().stream().map(AppointmentMapper::toResponse).toList();
+    public List<AppointmentDtos.AppointmentResponse> findAll(String status) {
+        if (status == null || status.equalsIgnoreCase("ALL")) {
+            return appointmentRepository.findAll().stream().map(AppointmentMapper::toResponse).toList();
+        }
+        List<AppointmentStatus> statuses = switch (status.toUpperCase()) {
+            case "ACTIVE" -> List.of(AppointmentStatus.SCHEDULED, AppointmentStatus.CONFIRMED);
+            case "COMPLETED" -> List.of(AppointmentStatus.COMPLETED);
+            case "CANCELLED" -> List.of(AppointmentStatus.CANCELLED);
+            case "NO_SHOW" -> List.of(AppointmentStatus.NO_SHOW);
+            default -> Collections.emptyList();
+        };
+        return appointmentRepository.findByStatusIn(statuses).stream()
+                .map(AppointmentMapper::toResponse).toList();
     }
 
     @Override

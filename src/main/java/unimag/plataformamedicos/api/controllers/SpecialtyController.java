@@ -8,9 +8,10 @@ import unimag.plataformamedicos.api.dtos.SpecialtyDtos.*;
 import unimag.plataformamedicos.service.interfaces.SpecialtyService;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/specialties")
+@RequestMapping({"/api/specialties", "/especialidades"})
 @RequiredArgsConstructor
 public class SpecialtyController {
 
@@ -24,5 +25,18 @@ public class SpecialtyController {
     @GetMapping
     public ResponseEntity<List<SpecialtyResponse>> findAll() {
         return ResponseEntity.ok(specialtyService.findAll());
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<SpecialtyResponse> update(
+            @PathVariable UUID id,
+            @RequestBody UpdateSpecialtyRequest request) {
+        return ResponseEntity.ok(specialtyService.update(id, request));
+    }
+
+    @PatchMapping("/{id}/desactivar")
+    public ResponseEntity<Void> deactivate(@PathVariable UUID id) {
+        specialtyService.deactivate(id);
+        return ResponseEntity.noContent().build();
     }
 }

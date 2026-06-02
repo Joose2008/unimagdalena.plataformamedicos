@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,6 +35,7 @@ public class AuthController {
     private final JwtService jwt;
 
     @PostMapping("/register")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest req) {
         if (users.existsByEmailIgnoreCase(req.email())) {
             return ResponseEntity.badRequest().build();
@@ -41,7 +43,7 @@ public class AuthController {
 
         var roles = Optional.ofNullable(req.roles())
                 .filter(r -> !r.isEmpty())
-                .orElseGet(() -> Set.of(Role.ROLE_USER));
+                .orElse(Set.of());
 
         var user = AppUser.builder()
                 .email(req.email())

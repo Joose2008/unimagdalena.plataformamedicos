@@ -6,7 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 import unimag.plataformamedicos.api.dtos.ReportDtos.*;
+import unimag.plataformamedicos.security.jwt.JwtService;
+import unimag.plataformamedicos.security.service.JpaUserDetailsService;
 import unimag.plataformamedicos.service.interfaces.ReportService;
 
 import java.time.LocalDateTime;
@@ -18,7 +23,9 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(ReportController.class)   // ← Cambio principal
+@WebMvcTest(controllers = ReportController.class,
+        excludeAutoConfiguration = {SecurityAutoConfiguration.class, SecurityFilterAutoConfiguration.class,
+                UserDetailsServiceAutoConfiguration.class})
 class ReportControllerTest {
 
     @Autowired
@@ -26,6 +33,12 @@ class ReportControllerTest {
 
     @MockBean
     private ReportService reportService;
+
+    @MockBean
+    private JwtService jwtService;
+
+    @MockBean
+    private JpaUserDetailsService jpaUserDetailsService;
 
     private final String start = "2025-04-01T00:00:00";
     private final String end   = "2025-04-30T23:59:59";

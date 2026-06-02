@@ -29,4 +29,20 @@ public class DoctorScheduleController {
     public ResponseEntity<List<DoctorScheduleResponse>> findByDoctor(@PathVariable UUID doctorId) {
         return ResponseEntity.ok(doctorScheduleService.findByDoctor(doctorId));
     }
+
+    @PutMapping("/{scheduleId}")
+    public ResponseEntity<DoctorScheduleResponse> update(
+            @PathVariable UUID doctorId,
+            @PathVariable UUID scheduleId,
+            @RequestBody UpdateDoctorScheduleRequest request) {
+        return ResponseEntity.ok(doctorScheduleService.update(doctorId, scheduleId, request));
+    }
+
+    @DeleteMapping("/{scheduleId}")
+    public ResponseEntity<Void> delete(
+            @PathVariable UUID doctorId,
+            @PathVariable UUID scheduleId) {
+        doctorScheduleService.delete(doctorId, scheduleId);
+        return ResponseEntity.noContent().build();
+    }
 }

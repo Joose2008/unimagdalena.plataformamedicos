@@ -7,8 +7,13 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 import unimag.plataformamedicos.api.dtos.DoctorDtos.*;
 import unimag.plataformamedicos.api.dtos.SpecialtyDtos.SpecialtyResponse;
+import unimag.plataformamedicos.security.jwt.JwtService;
+import unimag.plataformamedicos.security.service.JpaUserDetailsService;
 import unimag.plataformamedicos.service.interfaces.DoctorService;
 
 import java.util.List;
@@ -20,14 +25,22 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(DoctorController.class)   // ← Cambio principal
+@WebMvcTest(controllers = DoctorController.class,
+        excludeAutoConfiguration = {SecurityAutoConfiguration.class, SecurityFilterAutoConfiguration.class,
+                UserDetailsServiceAutoConfiguration.class})
 class DoctorControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean   // ← Cambio: @MockBean en lugar de @MockitoBean
+    @MockBean
     private DoctorService doctorService;
+
+    @MockBean
+    private JwtService jwtService;
+
+    @MockBean
+    private JpaUserDetailsService jpaUserDetailsService;
 
     private final UUID doctorId    = UUID.fromString("11111111-1111-1111-1111-111111111111");
     private final UUID specialtyId = UUID.fromString("22222222-2222-2222-2222-222222222222");

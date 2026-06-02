@@ -4,10 +4,15 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;  // Cambiado de MockitoBean a MockBean
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 import unimag.plataformamedicos.api.dtos.AppointmentTypeDtos.*;
+import unimag.plataformamedicos.security.jwt.JwtService;
+import unimag.plataformamedicos.security.service.JpaUserDetailsService;
 import unimag.plataformamedicos.service.interfaces.AppointmentTypeService;
 
 import java.util.List;
@@ -18,14 +23,22 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(AppointmentTypeController.class)  // ← Cambio principal
+@WebMvcTest(controllers = AppointmentTypeController.class,
+        excludeAutoConfiguration = {SecurityAutoConfiguration.class, SecurityFilterAutoConfiguration.class,
+                UserDetailsServiceAutoConfiguration.class})
 class AppointmentTypeControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean  // ← Cambio: usar @MockBean en lugar de @MockitoBean (funciona igual en Spring Boot 3.4+)
+    @MockBean
     private AppointmentTypeService appointmentTypeService;
+
+    @MockBean
+    private JwtService jwtService;
+
+    @MockBean
+    private JpaUserDetailsService jpaUserDetailsService;
 
     private final UUID typeId = UUID.fromString("55555555-5555-5555-5555-555555555555");
 

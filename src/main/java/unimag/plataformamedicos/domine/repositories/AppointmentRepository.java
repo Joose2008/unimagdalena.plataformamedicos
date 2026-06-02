@@ -16,11 +16,14 @@ import unimag.plataformamedicos.enums.AppointmentStatus;
 import unimag.plataformamedicos.enums.PatientStatus;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
 @Repository
 public interface    AppointmentRepository extends JpaRepository<Appointment, UUID> {
+
+    List<Appointment> findByStatusIn(Collection<AppointmentStatus> statuses);
 
     List<Appointment> findAppointmentByPatientAndStatus(Patient patient, AppointmentStatus appointmentStatus);
 

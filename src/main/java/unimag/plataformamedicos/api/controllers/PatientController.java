@@ -32,6 +32,11 @@ public class PatientController {
         return ResponseEntity.ok(patientService.findAll());
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<List<PatientSummaryResponse>> search(@RequestParam String q) {
+        return ResponseEntity.ok(patientService.search(q));
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<PatientResponse> update(
             @PathVariable UUID id,

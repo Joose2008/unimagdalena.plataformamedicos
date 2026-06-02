@@ -11,7 +11,7 @@ import java.util.UUID;
 public interface AppointmentService {
     AppointmentDtos.AppointmentResponse create(CreateAppointmentRequest request);
     AppointmentResponse findById(UUID id);
-    List<AppointmentResponse> findAll();
+    List<AppointmentResponse> findAll(String status);
     AppointmentResponse confirm(UUID id);
     AppointmentResponse cancel(UUID id, CancelAppointmentRequest request);
     AppointmentResponse complete(UUID id, String request);

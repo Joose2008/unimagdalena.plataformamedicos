@@ -6,7 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 import unimag.plataformamedicos.api.dtos.ReportDtos.AvailabilitySlotResponse;
+import unimag.plataformamedicos.security.jwt.JwtService;
+import unimag.plataformamedicos.security.service.JpaUserDetailsService;
 import unimag.plataformamedicos.service.interfaces.AvailabilityService;
 
 import java.time.LocalDate;
@@ -20,7 +25,9 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(AvailabilityController.class)
+@WebMvcTest(controllers = AvailabilityController.class,
+        excludeAutoConfiguration = {SecurityAutoConfiguration.class, SecurityFilterAutoConfiguration.class,
+                UserDetailsServiceAutoConfiguration.class})
 class AvailabilityControllerTest {
 
     @Autowired
@@ -28,6 +35,12 @@ class AvailabilityControllerTest {
 
     @MockBean
     private AvailabilityService availabilityService;
+
+    @MockBean
+    private JwtService jwtService;
+
+    @MockBean
+    private JpaUserDetailsService jpaUserDetailsService;
 
     private final UUID doctorId          = UUID.randomUUID();
     private final UUID appointmentTypeId = UUID.randomUUID();

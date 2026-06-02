@@ -28,8 +28,9 @@ public class AppointmentController {
     }
 
     @GetMapping
-    public ResponseEntity<List<AppointmentResponse>> findAll() {
-        return ResponseEntity.ok(appointmentService.findAll());
+    public ResponseEntity<List<AppointmentResponse>> findAll(
+            @RequestParam(required = false) String status) {
+        return ResponseEntity.ok(appointmentService.findAll(status));
     }
 
     @PutMapping("/{id}/confirm")

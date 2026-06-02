@@ -7,7 +7,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 import unimag.plataformamedicos.api.dtos.DoctorScheduleDtos.*;
+import unimag.plataformamedicos.security.jwt.JwtService;
+import unimag.plataformamedicos.security.service.JpaUserDetailsService;
 import unimag.plataformamedicos.service.interfaces.DoctorScheduleService;
 
 import java.time.DayOfWeek;
@@ -21,7 +26,9 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(DoctorScheduleController.class)   // ← Cambio principal
+@WebMvcTest(controllers = DoctorScheduleController.class,
+        excludeAutoConfiguration = {SecurityAutoConfiguration.class, SecurityFilterAutoConfiguration.class,
+                UserDetailsServiceAutoConfiguration.class})
 class DoctorScheduleControllerTest {
 
     @Autowired
@@ -29,6 +36,12 @@ class DoctorScheduleControllerTest {
 
     @MockBean
     private DoctorScheduleService doctorScheduleService;
+
+    @MockBean
+    private JwtService jwtService;
+
+    @MockBean
+    private JpaUserDetailsService jpaUserDetailsService;
 
     private final UUID doctorId   = UUID.fromString("11111111-1111-1111-1111-111111111111");
     private final UUID scheduleId = UUID.fromString("66666666-6666-6666-6666-666666666666");

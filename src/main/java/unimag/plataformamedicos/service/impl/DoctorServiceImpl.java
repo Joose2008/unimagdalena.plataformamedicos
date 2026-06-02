@@ -8,7 +8,7 @@ import unimag.plataformamedicos.domine.entities.Doctor;
 import unimag.plataformamedicos.domine.entities.Specialty;
 import unimag.plataformamedicos.domine.repositories.DoctorRepository;
 import unimag.plataformamedicos.domine.repositories.SpecialtyRepository;
-import unimag.plataformamedicos.exception.ResourceNoFoundException;
+import unimag.plataformamedicos.exception.ResourceNotFoundException;
 import unimag.plataformamedicos.service.interfaces.DoctorService;
 import unimag.plataformamedicos.service.mappers.DoctorMapper;
 
@@ -27,7 +27,7 @@ public class DoctorServiceImpl implements DoctorService {
     @Transactional
     public DoctorDtos.DoctorResponse create(DoctorDtos.CreateDoctorRequest request) {
         var specialty = specialtyRepository.findById(request.specialtyId())
-                .orElseThrow(() -> new ResourceNoFoundException("Specialty with id %d".formatted(request.specialtyId())));
+                .orElseThrow(() -> new ResourceNotFoundException("Specialty with id %d".formatted(request.specialtyId())));
 
         var doctorEntity = DoctorMapper.toEntity(request);
         doctorEntity.setSpecialty(specialty);
@@ -40,7 +40,7 @@ public class DoctorServiceImpl implements DoctorService {
     @Transactional(readOnly = true)
     public DoctorDtos.DoctorResponse findById(UUID id) {
         return doctorRepository.findById(id).map(DoctorMapper::toResponse)
-                .orElseThrow(() -> new ResourceNoFoundException("Doctor %d not found".formatted(id)));
+                .orElseThrow(() -> new ResourceNotFoundException("Doctor %d not found".formatted(id)));
     }
 
     @Override
@@ -50,13 +50,25 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<DoctorDtos.DoctorResponse> search(String query) {
+        if (query == null || query.trim().isBlank()) {
+            return List.of();
+        }
+        return doctorRepository.searchActiveByNameLicenceOrEmail(query.trim()).stream()
+                .limit(10)
+                .map(DoctorMapper::toResponse)
+                .toList();
+    }
+
+    @Override
     @Transactional
     public DoctorDtos.DoctorResponse update(UUID id, DoctorDtos.UpdateDoctorRequest request) {
         Doctor doctor = doctorRepository.findById(id)
-                .orElseThrow(() -> new ResourceNoFoundException("Doctor %d not found".formatted(id)));
+                .orElseThrow(() -> new ResourceNotFoundException("Doctor %d not found".formatted(id)));
 
         Specialty specialty = specialtyRepository.findById(request.specialtyId())
-                .orElseThrow(() -> new ResourceNoFoundException("Specialty %d not found".formatted(request.specialtyId())));
+                .orElseThrow(() -> new ResourceNotFoundException("Specialty %d not found".formatted(request.specialtyId())));
 
         doctor.setSpecialty(specialty);
         DoctorMapper.patch(doctor, request);
@@ -68,7 +80,7 @@ public class DoctorServiceImpl implements DoctorService {
     @Transactional
     public DoctorDtos.DoctorResponse update(UUID id, DoctorDtos.UpdateDoctorLicenceRequest request) {
         Doctor doctor = doctorRepository.findById(id)
-                .orElseThrow(() -> new ResourceNoFoundException("Doctor %d not found".formatted(id)));
+                .orElseThrow(() -> new ResourceNotFoundException("Doctor %d not found".formatted(id)));
 
         doctor.setLicenceNumber(request.licenceNumber());
         doctorRepository.save(doctor);

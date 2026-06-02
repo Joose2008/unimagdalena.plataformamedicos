@@ -13,6 +13,7 @@ public interface DoctorService {
     DoctorResponse create(CreateDoctorRequest request);
     DoctorResponse findById(UUID id);
     List<DoctorDtos.DoctorResponse> findAll();
+    List<DoctorDtos.DoctorResponse> search(String query);
     DoctorResponse update(UUID id, UpdateDoctorRequest request);
     DoctorResponse update(UUID id,DoctorDtos.UpdateDoctorLicenceRequest request);
 }

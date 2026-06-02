@@ -12,7 +12,7 @@ import unimag.plataformamedicos.domine.entities.DoctorSchedule;
 import unimag.plataformamedicos.domine.entities.Specialty;
 import unimag.plataformamedicos.domine.repositories.DoctorRepository;
 import unimag.plataformamedicos.domine.repositories.DoctorScheduleRepository;
-import unimag.plataformamedicos.exception.ResourceNoFoundException;
+import unimag.plataformamedicos.exception.ResourceNotFoundException;
 import unimag.plataformamedicos.service.impl.DoctorScheduleServiceImpl;
 
 import java.time.DayOfWeek;
@@ -82,7 +82,7 @@ class DoctorScheduleServiceImplTest {
 
         when(doctorRepository.findById(doctorId)).thenReturn(Optional.empty());
 
-        assertThrows(ResourceNoFoundException.class, () -> service.create(doctorId, request));
+        assertThrows(ResourceNotFoundException.class, () -> service.create(doctorId, request));
         verify(doctorScheduleRepository, never()).save(any());
     }
 
@@ -117,7 +117,7 @@ class DoctorScheduleServiceImplTest {
     void shouldThrowWhenDoctorNotFoundOnFindByDoctor() {
         when(doctorRepository.findById(doctorId)).thenReturn(Optional.empty());
 
-        assertThrows(ResourceNoFoundException.class, () -> service.findByDoctor(doctorId));
+        assertThrows(ResourceNotFoundException.class, () -> service.findByDoctor(doctorId));
     }
 
     // -----------------------------------------------------------------------

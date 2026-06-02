@@ -16,6 +16,7 @@ public class PatientDtos {
 
     public record UpdatePatientRequest(
             String name,
+            String documentNumber,
             String email,
             String phone,
             PatientStatus patientStatus

@@ -7,6 +7,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 import unimag.plataformamedicos.api.dtos.AppointmentDtos.*;
 import unimag.plataformamedicos.api.dtos.AppointmentTypeDtos.AppointmentTypeSummaryResponse;
 import unimag.plataformamedicos.api.dtos.DoctorDtos.DoctorSummaryResponse;
@@ -14,6 +17,8 @@ import unimag.plataformamedicos.api.dtos.OfficeDtos.OfficeResponse;
 import unimag.plataformamedicos.api.dtos.PatientDtos.PatientSummaryResponse;
 import unimag.plataformamedicos.enums.AppointmentStatus;
 import unimag.plataformamedicos.enums.OfficeStatus;
+import unimag.plataformamedicos.security.jwt.JwtService;
+import unimag.plataformamedicos.security.service.JpaUserDetailsService;
 import unimag.plataformamedicos.service.interfaces.AppointmentService;
 
 import java.time.LocalDateTime;
@@ -26,7 +31,9 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(AppointmentController.class)
+@WebMvcTest(controllers = AppointmentController.class,
+        excludeAutoConfiguration = {SecurityAutoConfiguration.class, SecurityFilterAutoConfiguration.class,
+                UserDetailsServiceAutoConfiguration.class})
 class AppointmentControllerTest {
 
     @Autowired
@@ -34,6 +41,12 @@ class AppointmentControllerTest {
 
     @MockitoBean
     private AppointmentService appointmentService;
+
+    @MockitoBean
+    private JwtService jwtService;
+
+    @MockitoBean
+    private JpaUserDetailsService jpaUserDetailsService;
 
     private final UUID appointmentId = UUID.fromString("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa");
     private final UUID patientId     = UUID.fromString("33333333-3333-3333-3333-333333333333");
